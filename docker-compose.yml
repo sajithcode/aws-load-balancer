@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  nginx-lb:
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx-lb/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - nginx-backend1
+      - nginx-backend2
+
+  nginx-backend1:
+    image: nginx
+    volumes:
+      - ./nginx-backend1:/usr/share/nginx/html
+
+  nginx-backend2:
+    image: nginx
+    volumes:
+      - ./nginx-backend2:/usr/share/nginx/html
+
+  php-server1:
+    image: php:7.4-apache
+    volumes:
+      - ./php-server1:/var/www/html
+
+  php-server2:
+    image: php:7.4-apache
+    volumes:
+      - ./php-server2:/var/www/html
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: testdb
+    volumes:
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
